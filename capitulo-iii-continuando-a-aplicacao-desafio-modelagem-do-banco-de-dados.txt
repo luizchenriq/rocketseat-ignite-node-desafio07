@@ -1,0 +1,64 @@
+
+Table "users" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "first_name" "character varying" [not null]
+  "last_name" "character varying" [not null]
+  "email" "character varying" [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "games" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "title" "character varying" [not null]
+  "genresId" uuid [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "users_games_games" {
+  "usersId" uuid [not null]
+  "gamesId" uuid [not null]
+
+Indexes {
+  (usersId, gamesId) [pk]
+  usersId [name: "IDX_e5263d029d8644de829aae5c35"]
+  gamesId [name: "IDX_934b0d8f9d0084c97d3876ad32"]
+}
+}
+
+Table "genres" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "title" "character varying" [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "orders" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "usersId" uuid [not null]
+  "created_at" timestamp [not null, default: `now()`]
+  "updated_at" timestamp [not null, default: `now()`]
+}
+
+Table "orders_games" {
+  "ordersId" uuid [not null]
+  "gamesId" uuid [not null]
+}
+
+
+Ref: "users"."id" < "users_games_games"."usersId"
+
+Ref: "games"."id" < "users_games_games"."gamesId"
+
+Ref: "genres"."id" < "games"."genresId"
+
+
+
+
+
+Ref: "users"."id" < "orders"."usersId"
+
+Ref: "orders"."id" < "orders_games"."ordersId"
+
+Ref: "games"."id" < "orders_games"."gamesId"
